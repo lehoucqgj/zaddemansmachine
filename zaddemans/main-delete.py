@@ -34,9 +34,6 @@ total_BEF = 0.0
 debounce_delay = 70
 
 is_BEF = False
-switch_state_price = False
-
-to_print = False
 
 prices_EUR =  [2.5, 
                3.5, 
@@ -53,47 +50,47 @@ prices_BEF =  [100,
                180]
 
 def print_total():
-    global is_BEF, total_BEF, total_EUR, to_print
+    global is_BEF, total_BEF, total_EUR
 
-    if to_print == True:
-        to_print = False
-        start_time = utime.ticks_ms() #Time recording start
+    start_time = utime.ticks_ms() #Time recording start
 
-        # Clear the area where the total is displayed
-        for i in range(9, 16):
-            lcd.move_to(i, 0)
-            lcd.putchar(' ')
+    # Clear the area where the total is displayed
+    for i in range(9, 16):
+        lcd.move_to(i, 0)
+        lcd.putchar(' ')
 
-        # Determine which total to display and its position
-        totaal = total_BEF if is_BEF else total_EUR
-        formatted_totaal = "{:.0f}".format(totaal) if is_BEF else "{:.2f}".format(totaal)
-        
-        if totaal < 10:
-            position = 14 if is_BEF else 12
-        elif totaal < 100:
-            position = 13 if is_BEF else 11
-        elif totaal < 1000:
-            position = 12 if is_BEF else 10
-        else:
-            position = 11 if is_BEF else 9
-        
-        lcd.move_to(position, 0)
-        lcd.putstr(formatted_totaal)
+    # Determine which total to display and its position
+    totaal = total_BEF if is_BEF else total_EUR
+    formatted_totaal = "{:.0f}".format(totaal) if is_BEF else "{:.2f}".format(totaal)
+    
+    if totaal < 10:
+        position = 14 if is_BEF else 12
+    elif totaal < 100:
+        position = 13 if is_BEF else 11
+    elif totaal < 1000:
+        position = 12 if is_BEF else 10
+    else:
+        position = 11 if is_BEF else 9
+    
+    lcd.move_to(position, 0)
+    lcd.putstr(formatted_totaal)
 
-        end_time = utime.ticks_ms() #Time recording end
-        execution_time = utime.ticks_diff(end_time, start_time)  # Calculate the difference
-        print("Execution time: {} miliseconds".format(execution_time))
+    end_time = utime.ticks_ms() #Time recording end
+    execution_time = utime.ticks_diff(end_time, start_time)  # Calculate the difference
+    print("Execution time: {} miliseconds".format(execution_time))
 
 def reset():
     lcd.clear()
     UI()
 
 def handler_buttons(pin):
-    global total_EUR, total_BEF, prices_EUR, prices_BEF, to_print, switch_state_price
+    global total_EUR, total_BEF, prices_EUR, prices_BEF
 
     utime.sleep_ms(debounce_delay)
 
+    switch_state_price = False
     print(switch_state_price)
+
     if pin == buttons_add[0] and buttons_add[0].value() == 1 and switch_state_price == False:   #piews
         switch_state_price = True
         total_EUR += prices_EUR[0]
@@ -101,32 +98,26 @@ def handler_buttons(pin):
         print(switch_state_price)
         print(total_EUR)
         print(buttons_add[0].value())
-        to_print = True
     elif pin == buttons_add[1] and buttons_add[1].value() == 1 and switch_state_price == False: #gust
         switch_state_price = True
         total_EUR += prices_EUR[1]
         total_BEF += prices_BEF[1]
-        to_print = True
     elif pin == buttons_add[2] and buttons_add[2].value() == 1 and switch_state_price == False: #coca
         switch_state_price = True
         total_EUR += prices_EUR[2]
         total_BEF += prices_BEF[2]
-        to_print = True
     elif pin == buttons_add[3] and buttons_add[3].value() == 1 and switch_state_price == False: #sparta/H2O
         switch_state_price = True
         total_EUR += prices_EUR[3]
         total_BEF += prices_BEF[3]
-        to_print = True
     elif pin == buttons_add[4] and buttons_add[4].value() == 1 and switch_state_price == False: #duvel
         switch_state_price = True
         total_EUR += prices_EUR[4]
         total_BEF += prices_BEF[4]
-        to_print = True
     elif pin == buttons_add[5] and buttons_add[5].value() == 1 and switch_state_price == False: #wijn/limonade
         switch_state_price = True
         total_EUR += prices_EUR[5]
         total_BEF += prices_BEF[5]
-        to_print = True
     
     print_total()
 
@@ -140,7 +131,7 @@ def handler_reset(pin):
 
 # set to BEF or EUR
 def handler_to_BEF(pin):
-    global is_BEF, to_print
+    global is_BEF
 
     utime.sleep_ms(debounce_delay)
 
@@ -149,7 +140,6 @@ def handler_to_BEF(pin):
     print(switch_state_BEF)
     if button_BEF.value() == 1 and switch_state_BEF == False:
         switch_state_BEF = True
-        to_print = True
         is_BEF = not is_BEF
         print(switch_state_BEF)
     print_total()
@@ -199,5 +189,4 @@ welcome()
 UI()
 # Program loop
 while True:
-    switch_state_price = False
-    utime.sleep(0.001)
+    utime.sleep(.0001)
