@@ -8,7 +8,7 @@ jupiler
 fris
 4-----------3---------------
 export
-wijvenbier
+fruitbier
 5-----------3.5-------------
 gust
 wijn
